@@ -1,4 +1,4 @@
-namespace Presentation.Services;
+namespace Business.Services;
 
 public interface IEventService
 {
