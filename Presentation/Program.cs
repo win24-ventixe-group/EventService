@@ -1,18 +1,39 @@
 using Business.Services;
 using Microsoft.EntityFrameworkCore;
+using Persistence.Contexts;
 using Persistence.Repositories;
-using Presentation.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x=> x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
-builder.Services.AddScoped<IEventRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventService, EventService>();
 
+// Configure logging for azure log streaming
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddAzureWebAppDiagnostics();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
 var app = builder.Build();
+
+var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+var startupLogger = loggerFactory.CreateLogger("Startup");
+startupLogger.LogInformation("🚀 App has started and this should appear in log stream");
+Console.WriteLine("🧪 ASP.NET Core starting in environment: " + builder.Environment.EnvironmentName);
+
 app.MapOpenApi();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Event Service API");
+    c.RoutePrefix = string.Empty;
+});
+
 app.UseHttpsRedirection();
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 

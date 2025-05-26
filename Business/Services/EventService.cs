@@ -45,11 +45,12 @@ public class EventService(IEventRepository eventRepository) : IEventService
             Description = x.Description,
             Location = x.Location,
             EventDate = x.EventDate,
+            Id = x.Id
         });
         return new EventResult<IEnumerable<Event>> { Success = true, Result = events };
     }
     
-    public async Task<EventResult<Event>?> GetEventsAsync(string eventId)
+    public async Task<EventResult<Event?>> GetEventAsync(string eventId)
     {
         var result = await _eventRepository.GetAsync(x => x.Id == eventId);
 
@@ -61,7 +62,8 @@ public class EventService(IEventRepository eventRepository) : IEventService
             Title = result.Result.Title,
             Description = result.Result.Description,
             Location = result.Result.Location,
-            EventDate = result.Result.EventDate
+            EventDate = result.Result.EventDate,
+            Id = result.Result.Id
         };
 
         return new EventResult<Event?> { Success = true, Result = currentEvent };
