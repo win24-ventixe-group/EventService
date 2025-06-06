@@ -31,6 +31,7 @@ public class EventRepository(DataContext context) : BaseRepository<EventEntity>(
         {
             var entity = await _table
                              .Include(x => x.Packages)
+                             .ThenInclude(x => x.Package)
                              .FirstOrDefaultAsync(expression) 
                          ?? throw new Exception("Not Found.");
 
