@@ -16,14 +16,15 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddAzureWebAppDiagnostics();
-builder.Logging.SetMinimumLevel(LogLevel.Debug);
+builder.Logging.SetMinimumLevel(LogLevel.Trace);
 
 var app = builder.Build();
 
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 var startupLogger = loggerFactory.CreateLogger("Startup");
-startupLogger.LogInformation("🚀 App has started and this should appear in log stream");
-Console.WriteLine("🧪 ASP.NET Core starting in environment: " + builder.Environment.EnvironmentName);
+startupLogger.LogInformation("App has started and this should appear in log stream");
+Console.WriteLine("ASP.NET Core starting in environment: " + builder.Environment.EnvironmentName);
+
 
 app.MapOpenApi();
 
