@@ -12,7 +12,10 @@ public class EventRepository(DataContext context) : BaseRepository<EventEntity>(
     {
         try
         {
-            var entities = await _table.Include(x => x.Packages).ToListAsync();
+            var entities = await _table
+                .Include(x => x.Packages)
+                .ThenInclude(x => x.Package)
+                .ToListAsync();
             return new RepositoryResult<IEnumerable<EventEntity>> { Success = true, Result = entities };
         }
         catch (Exception ex)
