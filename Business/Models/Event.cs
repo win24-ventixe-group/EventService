@@ -10,4 +10,5 @@ public class Event
     public DateTime EventDate { get; set; }
     public string? Location { get; set; }
     public string? Description { get; set; }
+    public List<EventPackage>? Packages { get; set; }
 }

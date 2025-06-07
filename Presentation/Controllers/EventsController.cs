@@ -9,22 +9,17 @@ namespace Presentation.Controllers;
 
 public class EventsController(IEventService eventService, ILogger<EventsController> logger) : ControllerBase
 {
-    private readonly IEventService _eventService = eventService;
-    
-    private readonly ILogger<EventsController> _logger = logger;
-
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        _logger.LogInformation("This is an info message");
-        var events = await _eventService.GetEventsAsync();
+        var events = await eventService.GetEventsAsync();
         return Ok(events);
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(string id)
     {
-        var currentEvent = await _eventService.GetEventAsync(id);
+        var currentEvent = await eventService.GetEventAsync(id);
         return Ok(currentEvent);
     }
     
@@ -34,7 +29,7 @@ public class EventsController(IEventService eventService, ILogger<EventsControll
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         
-        var result = await _eventService.CreateEventAsync(request);
+        var result = await eventService.CreateEventAsync(request);
         return result.Success ? Ok() : StatusCode(500, result.Error);
     }
 }

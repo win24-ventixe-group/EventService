@@ -40,12 +40,22 @@ public class EventService(IEventRepository eventRepository) : IEventService
         var result = await _eventRepository.GetAllAsync();
         var events = result.Result?.Select(x => new Event
         {
+            Id = x.Id,
             Image = x.Image,
             Title = x.Title,
             Description = x.Description,
             Location = x.Location,
             EventDate = x.EventDate,
-            Id = x.Id
+            Packages = Enumerable.Where(x.Packages, p => true)
+                .OrderBy(p => p.Package.Price)
+                .Select(p => new EventPackage
+                {
+                    Title = p.Package.Title, 
+                    SeatingArrangement = p.Package.SeatingArrangement,
+                    Placement = p.Package.Placement,
+                    Price = p.Package.Price,
+                    Currency = p.Package.Currency
+                }).ToList()
         });
         return new EventResult<IEnumerable<Event>> { Success = true, Result = events };
     }
@@ -58,12 +68,23 @@ public class EventService(IEventRepository eventRepository) : IEventService
             return new EventResult<Event?> { Success = false, Error = "Event Not found" };
         var currentEvent = new Event
         {
+            Id = result.Result.Id,
             Image = result.Result.Image,
             Title = result.Result.Title,
             Description = result.Result.Description,
             Location = result.Result.Location,
             EventDate = result.Result.EventDate,
-            Id = result.Result.Id
+            Packages = result.Result.Packages
+                .Where(p => true)
+                .OrderBy(p => p.Package.Price)
+                .Select(p => new EventPackage
+                {
+                    Title = p.Package.Title,
+                    SeatingArrangement = p.Package.SeatingArrangement,
+                    Placement = p.Package.Placement,
+                    Price = p.Package.Price,
+                    Currency = p.Package.Currency
+                }).ToList()
         };
 
         return new EventResult<Event?> { Success = true, Result = currentEvent };
